@@ -1,5 +1,6 @@
 package com.example.jbert.upcomingmoviesapp
 
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +13,12 @@ class MainAdapter(val _moviesList: MoviesList): RecyclerView.Adapter<CustomViewH
     var page = 0
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
-        holder.itemView.textView_title.text = _moviesList.results[position].title
-        holder.itemView.textView_releaseDate.text = _moviesList.results[position].release_date
+
+        val movie = _moviesList.results[position]
+        holder?._movie = movie
+
+        holder.itemView.textView_title.text = movie.title
+        holder.itemView.textView_releaseDate.text = "Release Date: "+movie.release_date
 
         val backgroundView = holder.itemView.imageView_BackGround
         val imageURL = AccessParameters.getImagesURL().plus(_moviesList.results[position].backdrop_path)
@@ -32,6 +37,13 @@ class MainAdapter(val _moviesList: MoviesList): RecyclerView.Adapter<CustomViewH
     }
 }
 
-class CustomViewHolder(view: View): RecyclerView.ViewHolder(view) {
+class CustomViewHolder(val view: View, var _movie: Movie? = null): RecyclerView.ViewHolder(view) {
+    init{
+        view.setOnClickListener {
 
+            val intent = Intent(view.context,MovieDetailActivity::class.java)
+            intent.putExtra("movieObj", _movie)
+            view.context.startActivity(intent)
+        }
+    }
 }

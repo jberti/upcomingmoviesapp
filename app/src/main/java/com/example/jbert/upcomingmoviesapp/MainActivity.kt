@@ -2,15 +2,11 @@ package com.example.jbert.upcomingmoviesapp
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.widget.LinearLayout
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
 import java.io.IOException
-import kotlinx.android.parcel.Parcelize
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,7 +17,11 @@ class MainActivity : AppCompatActivity() {
         recyclerView_main.layoutManager = LinearLayoutManager(this)
 
         getMoviesJSON(1)
+
+
     }
+
+
 
     fun getMoviesJSON(_page: Int = 1){
 
