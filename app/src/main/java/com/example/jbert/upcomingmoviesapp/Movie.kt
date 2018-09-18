@@ -3,6 +3,7 @@ package com.example.jbert.upcomingmoviesapp
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
+//the model representing the JSON returned by the API service. So much easy to parse than when i did when programming with Delphi 2010.
 class MoviesList(val results: List<Movie>)
 
 @Parcelize
@@ -17,7 +18,7 @@ data class Movie(
         val original_language: String,
         val original_title: String,
         val genre_ids: List<Int>,
-        val backdrop_path: String,
+        val backdrop_path: String?,
         val adult: Boolean,
         val overview: String,
         val release_date: String

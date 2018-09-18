@@ -1,15 +1,29 @@
 package com.example.jbert.upcomingmoviesapp
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.text.Layout.JUSTIFICATION_MODE_INTER_WORD
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_moviedetails.*
-import kotlinx.android.synthetic.main.row_item.*
+import java.time.LocalDate
+import java.time.LocalDate.parse
 
 
 class MovieDetailActivity: AppCompatActivity() {
+
+    lateinit var title: String
+    lateinit var originalTitle: String
+    lateinit var overView: String
+    lateinit var releaseDate: String
+    var voteAverage: Float = 0F
+    lateinit var genres: String
+    lateinit var posterPath: String
+    lateinit var backgroundPath: String
+
+
 
     override fun onCreate(savedInstanceState: Bundle?   ) {
         super.onCreate(savedInstanceState)
@@ -17,48 +31,66 @@ class MovieDetailActivity: AppCompatActivity() {
 
 
         val intent = intent
-        val movie = intent.getParcelableExtra<Movie>("movieObj")
 
-        mapMovieToView(movie)
+        title = intent.getStringExtra("title")
+        originalTitle = intent.getStringExtra("originalTitle")
+        overView = intent.getStringExtra("overview")
+        releaseDate =intent.getStringExtra("releaseDate")
+        voteAverage = intent.getDoubleExtra("voteAverage", 0.0).toFloat()
+        genres =intent.getStringExtra("genres")
+        posterPath =intent.getStringExtra("posterPath")
+        backgroundPath =intent.getStringExtra("backgroundPath")
+
+        mapMovieToView()
+
     }
 
-    private fun mapMovieToView(_movie: Movie){
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun mapMovieToView(){
+
+        val releaseDate = parse(releaseDate)
+        val now = LocalDate.now()
+        val toBeReleased = (releaseDate > now)
 
         fun loadImages(){
-            var imageURL = AccessParameters.getImagesURL().plus(_movie.backdrop_path)
-            Picasso.get().load(imageURL).into(imageView_detail_background)
+            var imageURL: String
 
-            imageURL = AccessParameters.getImagesURL().plus(_movie.poster_path)
-            Picasso.get().load(imageURL).into(imageView_detail_poster)
-        }
-
-        fun loadGenres() {
-            var genresList = ArrayList<String>()
-            _movie.genre_ids.forEach {
-                val genre = Genres.GetGenre(it)
-                genresList.add(genre)
+            if (backgroundPath != "null") {
+                imageURL = AccessParameters.getImagesURL().plus(backgroundPath)
+                Picasso.get().load(imageURL).into(imageView_detail_background)
             }
-            textView_genres.text = "Genres: ${genresList.joinToString()}"
+
+            if (posterPath != "null") {
+                imageURL = AccessParameters.getImagesURL().plus(posterPath)
+                Picasso.get().load(imageURL).into(imageView_detail_poster)
+            }
         }
 
         fun loadRating(){
-            textView_detailRating.text = _movie.vote_average.toString()
-            when (_movie.vote_average){
-                in(0..3)     ->  textView_detailRating.setTextColor(Color.rgb(255,0,0))
-                in(3.1..6.9) ->  textView_detailRating.setTextColor(Color.rgb(255, 204, 0))
-                in(7..10)    ->  textView_detailRating.setTextColor(Color.rgb(0, 204, 0))
+
+            if (toBeReleased) {
+                textView_detailRating.text = "To Be Released"
+                }
+                else{
+                    textView_detailRating.text = voteAverage.toString()
+                    when (voteAverage) {
+                        in (0..3) -> textView_detailRating.setTextColor(Color.rgb(255, 0, 0))
+                        in (3.1..6.9) -> textView_detailRating.setTextColor(Color.rgb(255, 204, 0))
+                        in (7..10) -> textView_detailRating.setTextColor(Color.rgb(0, 204, 0))
+                }
             }
         }
 
         loadImages()
-        loadGenres()
+        //loadGenres()
         loadRating()
 
-        textView_detailTitle.text = _movie.title
-        textView_detailOriginalTitle.text = "Original Title: ${_movie.original_title}"
+        textView_detailTitle.text = title
+        textView_genres.text = "Genres:  $genres"
+        textView_detailOriginalTitle.text = "Original Title: $originalTitle"
         textView_detailDescription.justificationMode = JUSTIFICATION_MODE_INTER_WORD;
-        textView_detailDescription.text = _movie.overview
-        textView_detailReleaseDate.text = "Release Date: ${_movie.release_date}"
+        textView_detailDescription.text = overView
+        textView_detailReleaseDate.text = "Release Date: $releaseDate"
 
 
     }

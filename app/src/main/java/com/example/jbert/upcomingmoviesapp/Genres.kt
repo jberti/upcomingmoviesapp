@@ -1,5 +1,7 @@
 package com.example.jbert.upcomingmoviesapp
 
+//Since genre data doesnt appear to change frequently, i decided to make a hash list mapping the names and ids.
+// So sisnce this a MVP version of this app i decided to make it simple and reduce network overhead
 object Genres{
     var genresMap = hashMapOf<Int, String>()
 
