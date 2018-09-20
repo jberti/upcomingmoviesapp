@@ -23,6 +23,7 @@ class MainAdapter(val _moviesList: MoviesList): RecyclerView.Adapter<CustomViewH
         val backgroundView = holder.itemView.imageView_BackGround
         val imageURL = AccessParameters.getImagesURL().plus(_moviesList.results[position].backdrop_path)
         Picasso.get().load(imageURL).into(backgroundView)
+
     }
 
 
@@ -39,7 +40,7 @@ class MainAdapter(val _moviesList: MoviesList): RecyclerView.Adapter<CustomViewH
 
 }
 
-class CustomViewHolder(val view: View, var _movie: Movie? = null): RecyclerView.ViewHolder(view) {
+class CustomViewHolder(val _view: View, var _movie: Movie? = null): RecyclerView.ViewHolder(_view) {
 
     fun getGenresString(): String {
         var genresList = ArrayList<String>()
@@ -53,9 +54,9 @@ class CustomViewHolder(val view: View, var _movie: Movie? = null): RecyclerView.
     }
 
     init{
-        view.setOnClickListener {
+        _view.setOnClickListener {
 
-            val intent = Intent(view.context,MovieDetailActivity::class.java)
+            val intent = Intent(_view.context,MovieDetailActivity::class.java)
 
             //the initial idea was to pass the whoel movie object to the other activitie, but I was geting
             // a lot of null exceptions, when getting the object,in cases where the movie didnt have a poster url
@@ -67,7 +68,7 @@ class CustomViewHolder(val view: View, var _movie: Movie? = null): RecyclerView.
             intent.putExtra("genres",getGenresString())
             intent.putExtra("posterPath",_movie?.poster_path.toString())
             intent.putExtra("backgroundPath",_movie?.backdrop_path.toString())
-            view.context.startActivity(intent)
+            _view.context.startActivity(intent)
         }
 
     }

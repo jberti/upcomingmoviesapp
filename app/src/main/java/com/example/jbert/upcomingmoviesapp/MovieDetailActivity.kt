@@ -69,7 +69,7 @@ class MovieDetailActivity: AppCompatActivity() {
         fun loadRating(){
 
             if (toBeReleased) {
-                textView_detailRating.text = "To Be Released"
+                textView_detailRating.text = "NA"
                 }
                 else{
                     textView_detailRating.text = voteAverage.toString()
@@ -82,7 +82,6 @@ class MovieDetailActivity: AppCompatActivity() {
         }
 
         loadImages()
-        //loadGenres()
         loadRating()
 
         textView_detailTitle.text = title

@@ -1,9 +1,5 @@
 package com.example.jbert.upcomingmoviesapp
 
-import android.widget.TextView
-import okhttp3.*
-import java.io.IOException
-
 //made It static but the inital idea is to make an interface or abstract class to make possible different ways to retrieve de API data access
 object AccessParameters{
 

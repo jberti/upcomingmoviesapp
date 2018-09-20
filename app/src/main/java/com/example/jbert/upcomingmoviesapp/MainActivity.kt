@@ -12,7 +12,7 @@ import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
-    val maxPages = 20 //this is the max number of pages provided by the API
+    var maxPages = 0
     var page = 1
 
 
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         
         getMoviesJSON(page)
 
-        //made buttons to navigate because I couldn`t implement a left and right swipe Event.
+        //made buttons to navigate because I couldn`t implement a left and right swipe Event or infinite scroll
         button_next.setOnClickListener {
             page++
             getMoviesJSON(_page = page)
@@ -42,31 +42,37 @@ class MainActivity : AppCompatActivity() {
             button_next.isEnabled = (page < maxPages)
         }
 
+        recyclerView_main.addOnScrollListener(object: RecyclerView.OnScrollListener() {})
 
     }
 
-    // I dont like making API calls here but i couldnt made It work when It was in a controller class.
+    fun setCurrentPageText(){
+        textView_page.text = "$page / $maxPages"
+    }
+
+    // I dont like making API calls here but i couldnt make It work when It was in a controller class.
     // Even trying making a synchronous call didnt work.
     fun getMoviesJSON(_page: Int = 1){
 
         val url = AccessParameters.getUpcomingMoviesURL().plus( "&page=$_page")
-
         val request = Request.Builder().url(url).build()
         val client = OkHttpClient()
 
 
         client.newCall(request).enqueue(object : Callback{
             override fun onFailure(call: Call?, e: IOException?) {
-
+                TODO()
             }
 
             override fun onResponse(call: Call?, response: Response?) {
                 val body = response?.body()?.string()
                 val gson = GsonBuilder().create()
                 movList = gson.fromJson(body, MoviesList::class.java)
+                maxPages = movList.total_pages
 
                 runOnUiThread {
-                    recyclerView_main.adapter = MainAdapter(movList)
+                    recyclerView_main.adapter  = MainAdapter(movList)
+                    setCurrentPageText()
                 }
             }
 
@@ -75,5 +81,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
 
 
